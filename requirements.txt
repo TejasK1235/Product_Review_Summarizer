@@ -1,0 +1,11 @@
+flask
+pandas
+transformers
+sentence-transformers
+torch
+evaluate
+bert-score
+nltk
+tqdm
+rouge-score
+absl-py
