@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summary Results</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header fade-in-up">
+      <h1 class="logo">ReviewSummarizer</h1>
+      <p class="subtitle">Summary Results</p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      {% if error %}
+        <div class="alert alert-error fade-in-up">
+          <strong>Error:</strong> {{ error }}
+        </div>
+      {% else %}
+        <!-- Metadata Cards -->
+        <section class="metadata-section fade-in-up">
+          <div class="metadata-grid">
+            <div class="metadata-card">
+              <div class="metadata-label">Query</div>
+              <div class="metadata-value">{{ input_text }}</div>
+            </div>
+            <div class="metadata-card">
+              <div class="metadata-label">Product</div>
+              <div class="metadata-value">{{ product_title }}</div>
+            </div>
+            <div class="metadata-card">
+              <div class="metadata-label">ASIN</div>
+              <div class="metadata-value">{{ parent_asin }}</div>
+            </div>
+            <div class="metadata-card">
+              <div class="metadata-label">Summary Type</div>
+              <div class="metadata-value">{{ summary_type|title }}</div>
+            </div>
+          </div>
+        </section>
+
+        {% if error_msg %}
+          <div class="alert alert-warning fade-in-up-delay">
+            <strong>Note:</strong> {{ error_msg }}
+          </div>
+        {% endif %}
+
+        <!-- Summary Section -->
+        <section class="summary-section fade-in-up-delay">
+          <h2 class="section-title">📋 Summary</h2>
+          <div class="summary-content">
+            <p>{{ summary }}</p>
+          </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="reviews-section fade-in-up-delay">
+          <h2 class="section-title">📝 Reviews ({{ reviews|length }} total)</h2>
+          <div class="table-wrapper">
+            <table class="reviews-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Rating</th>
+                  <th>Verified</th>
+                  <th>Helpful</th>
+                  <th>Review Text</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in reviews %}
+                <tr>
+                  <td class="review-title">{{ r.title }}</td>
+                  <td class="review-rating">
+                    <span class="rating-badge">{{ r.rating }}⭐</span>
+                  </td>
+                  <td class="review-verified">
+                    <span class="badge {% if r.verified_purchase %}badge-success{% else %}badge-neutral{% endif %}">
+                      {{ "✓ Yes" if r.verified_purchase else "No" }}
+                    </span>
+                  </td>
+                  <td class="review-helpful">{{ r.helpful_vote }}</td>
+                  <td class="review-text">{{ r.text }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      {% endif %}
+
+      <!-- Back Button -->
+      <div class="back-section fade-in-up-delay">
+        <a href="{{ url_for('index') }}" class="back-button">← Back to Summarizer</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
