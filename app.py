@@ -21,7 +21,7 @@ from nltk.tokenize import sent_tokenize
 app = Flask(__name__)
 
 # ---------- CONFIG ----------
-CSV_PATH = "merged_reviews.csv"   # change if needed
+CSV_PATH = "merged_reviews.csv"   
 USE_GPU = torch.cuda.is_available()
 DEVICE = 0 if USE_GPU else -1
 MAX_DISPLAY_REVIEWS = 200
@@ -215,8 +215,10 @@ def summarize_route():
         # Try abstractive; on any exception (e.g., CUDA OOM) fall back immediately to extractive
         try:
             summary = summarize_abstractive(combined_text)
+            print("Abstractive summarization succeeded.")
         except Exception as e:
             # Fallback: extractive summary and inform the user
+            print(f"Abstractive summarization failed: {e}")
             summary = summarize_extractive(combined_text, top_k_sentences=top_k)
             error_msg = ("Abstractive summarization failed due to resource limits on the server. "
                          "Automatically switched to Extractive summary. Try a smaller input if you need abstractive output.")
@@ -245,4 +247,5 @@ def summarize_route():
     )
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
